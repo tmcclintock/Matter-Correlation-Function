@@ -10,7 +10,7 @@ import os, inspect
 data_path = os.path.dirname(os.path.abspath(inspect.stack()[0][1]))+"/"
 
 #Load in all the data we need, which includes pre-computed matrices
-radii         = np.loadtxt(data_path+"radii.txt")
+radii         = np.load(data_path+"radii_xi_mm_emu.npy")
 scale_factors = np.load(data_path+"scale_factors.npy")
 ln_xi_mean    = np.load(data_path+"ln_xi_mean.npy")
 phis          = np.load(data_path+"phis.npy")
@@ -133,7 +133,7 @@ if __name__=="__main__":
     cos = AD.test_box_cosmologies()[test_ind][:-1] #remove sigma8
     emu = ximm_emulator(cos)
     ximm = emu.predict(cos)
-    xiz = emu.xi_mm_at_z(1)
+    #xiz = emu.xi_mm_at_z(1)
     for i in range(Nz):
         plt.loglog(radii, radii**2*ximm[i])
     plt.show()

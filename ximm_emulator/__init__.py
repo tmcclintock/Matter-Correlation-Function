@@ -71,7 +71,10 @@ class ximm_emulator(object):
         Omega_c = och2/h**2
         Omega_m = Omega_b+Omega_c
         params = {'output': 'mPk',
-                  'h': h, 'ln10^{10}A_s': ln10As, 'n_s': ns,
+                  'h': h,
+                  'ln10^{10}A_s': ln10As,
+                  #'sigma8':sigma8,
+                  'n_s': ns,
                   'w0_fld': w, 'wa_fld': 0.0, 'Omega_b': Omega_b,
                   'Omega_cdm': Omega_c, 'Omega_Lambda': 1.- Omega_m,
                   'N_eff': Neff,
@@ -82,6 +85,7 @@ class ximm_emulator(object):
         cosmo.compute()
         print("\tCLASS done")
         self.class_cosmo_object = cosmo
+        self.sigma8 = cosmo.sigma8()
         return
 
     def predict(self, params=None):
@@ -94,8 +98,11 @@ class ximm_emulator(object):
             params = self.parameters
         #Weight for each principle component for these parameters
         weights_predicted = np.zeros((self.Npc))
+        sigma8 = self.sigma8
+        emu_params = np.delete(params, 4) #Remove ln10As
+        emu_params = np.append(emu_params, sigma8) #Add on sigma8
         for i in range(self.Npc):
-            weights_predicted[i] = self.gplist[i].predict(self.weights[i], np.atleast_2d(params))[0]
+            weights_predicted[i] = self.gplist[i].predict(self.weights[i], np.atleast_2d(emu_params))[0]
         #Loop over weights and add to the prediction
         r2ximm_diff = np.zeros((self.Nz*self.Nr))
         for i in range(Npc):
@@ -130,7 +137,8 @@ if __name__=="__main__":
     import aemulus_data as AD
     #Test it
     test_ind = 0
-    cos = AD.test_box_cosmologies()[test_ind][:-1] #remove sigma8
+    cos = AD.building_box_cosmologies()[test_ind]
+    cos = np.delete(cos, -1) #remove sigma8
     emu = ximm_emulator(cos)
     ximm = emu.predict(cos)
     #xiz = emu.xi_mm_at_z(1)

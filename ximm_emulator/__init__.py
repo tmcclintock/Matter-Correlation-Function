@@ -6,13 +6,15 @@ from george.kernels import *
 import scipy.optimize as op
 from classy import Class
 import cluster_toolkit.xi as ctxi
+import os, inspect
+data_path = os.path.dirname(os.path.abspath(inspect.stack()[0][1]))+"/"
 
 #Load in all the data we need, which includes pre-computed matrices
-radii         = np.loadtxt("radii.txt")
-scale_factors = np.load("scale_factors.npy")
-ln_xi_mean    = np.load("ln_xi_mean.npy")
-phis          = np.load("phis.npy")
-cosmologies   = np.load("cosmologies.npy")
+radii         = np.loadtxt(data_path+"radii.txt")
+scale_factors = np.load(data_path+"scale_factors.npy")
+ln_xi_mean    = np.load(data_path+"ln_xi_mean.npy")
+phis          = np.load(data_path+"phis.npy")
+cosmologies   = np.load(data_path+"cosmologies.npy")
 training_cos  = np.delete(cosmologies,4,1) #delete ln10As
 
 redshifts     = 1./scale_factors - 1.
@@ -25,9 +27,9 @@ ln_xi_stddev = 1.609
 #Number of principle components and number of cosmological parameters
 Npc          = len(phis)
 N_cos_params = len(training_cos[0])
-metric       = np.load("metric.npy")
-gp_params    = np.load("gp_parameters.npy")
-weights      = np.load("weights.npy")
+metric       = np.load(data_path+"metric.npy")
+gp_params    = np.load(data_path+"gp_parameters.npy")
+weights      = np.load(data_path+"weights.npy")
 
 #Create the gaussian processes for each principle component
 gplist = []

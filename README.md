@@ -4,6 +4,6 @@ An emulator for the matter correlation function, based on the Aemulus simulation
 At present, we are currently implementing a method to interpolate the returned curves at arbitrary redshifts, using a weighted average between adjacent snapshots.
 
 Install using
-```python
+```
 python setup.py install
 ```

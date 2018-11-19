@@ -7,3 +7,5 @@ Install using
 ```
 python setup.py install
 ```
+
+Check out the jupyter notebooks for examples of how to use the emulator.

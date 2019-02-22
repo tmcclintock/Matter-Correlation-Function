@@ -13,6 +13,7 @@ data_path = os.path.dirname(os.path.abspath(inspect.stack()[0][1]))+"/"
 _radii         = np.load(data_path+"radii_xi_mm_emu.npy")
 _scale_factors = np.load(data_path+"scale_factors.npy")
 _ln_xi_mean    = np.load(data_path+"ln_xi_mean.npy")
+_ln_xi_stddev  = np.load(data_path+"ln_xi_std.npy")
 _phis          = np.load(data_path+"phis.npy")
 _cosmologies   = np.load(data_path+"cosmologies.npy")
 _training_cos  = np.delete(_cosmologies,4,1) #delete ln10As
@@ -20,9 +21,6 @@ _training_cos  = np.delete(_cosmologies,4,1) #delete ln10As
 _redshifts     = 1./_scale_factors - 1.
 _Nr = len(_radii)
 _Nz = len(_redshifts)
-
-#Training data standard deviation in ln(xi_mm)
-_ln_xi_stddev = 1.609
 
 #Number of principle components and number of cosmological parameters
 _Npc          = len(_phis)
@@ -34,8 +32,7 @@ _weights      = np.load(data_path+"weights.npy")
 _gplist = []
 for i in range(_Npc):
     _N_cos_params = len(_training_cos[0])
-    kernel = 1.*(ExpSquaredKernel(_metric, ndim=_N_cos_params) +
-                 Matern32Kernel(_metric, ndim=_N_cos_params))
+    kernel = 1.*(ExpSquaredKernel(_metric, ndim=_N_cos_params) + Matern52Kernel(_metric, ndim=_N_cos_params))
     gp = george.GP(kernel=kernel, mean=0)
     gp.set_parameter_vector(_gp_params[i])
     gp.compute(_training_cos)

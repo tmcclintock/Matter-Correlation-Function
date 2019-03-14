@@ -90,7 +90,7 @@ class ximm_emulator(object):
         if params is not None and params is not self.parameters:
             assert len(params) is 7, "Only seven cosmological parameters supported."
             self.parameters = params
-            setup_class()
+            self.setup_class()
         else:
             params = self.parameters
         #Weight for each principle component for these parameters
@@ -117,7 +117,7 @@ class ximm_emulator(object):
         kh = k/h #h/Mpc
         for i in range(self.Nz):
             P = np.array([self.class_cosmo_object.pk(ki, self.redshifts[i]) for ki in k])*h**3
-            r2xinl[i] = self.radii**2 * ctxi.xi_mm_at_R(self.radii, kh, P)
+            r2xinl[i] = self.radii**2 * ctxi.xi_mm_at_r(self.radii, kh, P)
             ximm[i] = (r2ximm_diff[i*self.Nr :(i+1)*self.Nr] + r2xinl[i])/self.radii**2
         #Return the full prediction
         return ximm
